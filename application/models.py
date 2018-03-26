@@ -14,7 +14,7 @@ class Cultivation(models.Model):
 class Strain(models.Model):
     id     = models.AutoField('ID', primary_key=True)
     name   = models.CharField('Name', max_length=20, unique=True)
-    population = models.ForeignKey(Cultivation, to_field='id', blank=True, null=True, related_name='cultivation_id')
+    population = models.ForeignKey(Cultivation, to_field='id', blank=True, null=True, on_delete=models.SET_NULL, related_name='cultivation_id')
     source = models.ManyToManyField("self", verbose_name="pre-generation", blank=True, related_name='strain_id')
     taxon  = models.CharField('Taxon', max_length=50, blank=True)
     description = models.TextField('Description', blank=True)
