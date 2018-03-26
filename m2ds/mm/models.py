@@ -1,8 +1,9 @@
 from django.db import models
 from django.core.validators import RegexValidator
 
+
 class Cultivation(models.Model):
-    year_number_regex = RegexValidator(regex=r'^[1-2][0-9][0-9][0-9]$', message='YearNumber')
+    year_number_regex = RegexValidator(regex=r'^[1-2][0-9][0-9][0-9]$', message='4-digits number')
 
     id     = models.AutoField('ID', primary_key=True)
     name   = models.CharField('Name', max_length=50)
@@ -11,13 +12,20 @@ class Cultivation(models.Model):
     cultivator  = models.CharField('Cultivator', max_length=20, blank=True)
     description = models.TextField('Description', blank=True)
 
+    def __str__(self):
+        return self.name
+
+
 class Strain(models.Model):
     id     = models.AutoField('ID', primary_key=True)
     name   = models.CharField('Name', max_length=20, unique=True)
-    population = models.ForeignKey(Cultivation, to_field='id', blank=True, null=True, on_delete=models.SET_NULL, related_name='cultivation_id')
-    source = models.ManyToManyField("self", verbose_name="pre-generation", blank=True, related_name='strain_id')
+    population = models.ForeignKey(Cultivation, related_name='cultivation_id', to_field='id', blank=True, null=True, on_delete=models.SET_NULL)
+    source = models.ManyToManyField("self", related_name='strain_id', verbose_name="pre-generation", blank=True)
     taxon  = models.CharField('Taxon', max_length=50, blank=True)
     description = models.TextField('Description', blank=True)
+
+    def __str__(self):
+        return self.name
 
 class Marker(models.Model):
     marker_types = (('G', 'Genetic Marker'), ('T', 'Traits'))
@@ -26,6 +34,7 @@ class Marker(models.Model):
     name   = models.CharField('Name', max_length=20, unique=True)
     mtype  = models.CharField('Type', max_length=20, choices=marker_types, default='G', blank=False)
     description = models.TextField('Description', blank=True)
+
 
 class Management(models.Model):
     id     = models.AutoField('ID', primary_key=True)
