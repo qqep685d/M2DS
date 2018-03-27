@@ -2,6 +2,15 @@
 {% load bootstrap4 %}
 
 {% block content %}
+    <!-- Navigation bar -->
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a href="{% url 'mm:index' %}" class="nav-link">Top</a></li>
+        <li class="nav-item"><a href="{% url 'mm:cult_list' %}" class="nav-link active">Cultivation</a></li>
+        <li class="nav-item"><a href="{% url 'mm:strain_list' %}" class="nav-link">Strains</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Markers</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Table</a></li>
+    </ul>
+
     <h4 class="mt-4 mb-5 border-bottom">Edit | Cultivation Record</h4>
     {% if cult_id %}
     <form action="{% url 'mm:cult_edit' cult_id=cult_id %}" method="post">

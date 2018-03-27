@@ -4,6 +4,12 @@ from django.http import HttpResponse
 from mm.models import Cultivation, Strain, Marker, Management
 from mm.forms import CultivationForm
 
+
+#--- Index ---
+def index(request):
+    return render(request, 'mm/index.html', {})
+
+
 #--- Cultivation ---
 def cult_list(request):
     """ Show List """
@@ -29,6 +35,13 @@ def cult_edit(request, cult_id=None):
         form = CultivationForm(instance=cultivation)
 
     return render(request, 'mm/cult_edit.html', dict(form=form, cult_id=cult_id))
+
+
+def cult_confirm(request, cult_id=None):
+    """ Confirm """
+    rec = get_object_or_404(Cultivation, pk=cult_id)
+    return render(request, 'mm/cult_confirm.html', {'rec':rec})
+
 
 def cult_del(request, cult_id):
     """ Delete """
