@@ -1,0 +1,29 @@
+{% extends "mm/base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <h4 class="mt-4 border-bottom">Population Records</h4>
+    <a href="{% url 'mm:population_add' %}" class="btn btn-primary btn-sm my-3">Add</a>
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Year</th>
+            <th scope="col">Place</th>
+            <th scope="col">Cultivator</th>
+            <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for population_rec in population_recs %}
+        <tr>
+            <td><a href="{% url 'mm:population_edit' population_id=population_rec.id %}">{{ population_rec.name }}</a></td>
+            <td>{{ population_rec.year }}</td>
+            <td>{{ population_rec.place }}</td>
+            <td>{{ population_rec.cultivator }}</td>
+            <td>{{ population_rec.description }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock content %}

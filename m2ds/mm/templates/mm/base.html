@@ -1,0 +1,31 @@
+{% load i18n static %}
+<!DOCTYPE html>{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE|default:"ja" }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="{% static 'mm/css/bootstrap.min.css' %}">
+{% block extra_css %}{% endblock %}
+<title>{% block title %}M2DS{% endblock %}</title>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Navigation bar -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a href="{% url 'mm:index' %}" class="nav-link {% ifequal active_navi 0 %} active {% endifequal %}">Home</a></li>
+            <li class="nav-item"><a href="{% url 'mm:population_list' %}" class="nav-link {% ifequal active_navi 1 %} active {% endifequal %}">Populations</a></li>
+            <li class="nav-item"><a href="{% url 'mm:strain_list' %}" class="nav-link {% ifequal active_navi 2 %} active {% endifequal %}">Strains</a></li>
+            <li class="nav-item"><a href="#" class="nav-link {% ifequal active_navi 3 %} active {% endifequal %}">Markers</a></li>
+            <li class="nav-item"><a href="#" class="nav-link {% ifequal active_navi 4 %} active {% endifequal %}">Table</a></li>
+            <li class="nav-item"><a href="#" class="nav-link {% ifequal active_navi 5 %} active {% endifequal %}">Import / Export</a></li>
+        </ul>
+        {% block content %}
+            {{ content }}
+        {% endblock %}
+    </div>
+<script src="{% static 'mm/js/jquery.min.js' %}"></script>
+<script src="{% static 'mm/js/bootstrap.bundle.min.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

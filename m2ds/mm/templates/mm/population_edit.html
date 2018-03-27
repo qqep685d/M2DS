@@ -1,0 +1,20 @@
+{% extends "mm/base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <h4 class="mt-4 mb-5 border-bottom">Edit | Cultivation Record</h4>
+    {% if population_id %}
+    <form action="{% url 'mm:population_edit' population_id=population_id %}" method="post">
+    {% else %}
+    <form action="{% url 'mm:population_add' %}" method="post">
+    {% endif %}
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' %}
+        <div class="row">
+            <div class="offset-md-3 col-md-3">
+                <button type="submit" class="btn btn-outline-primary">OK</button>
+            </div>
+        </div>
+    </form>
+    <a href="{% url 'mm:population_list' %}" class="btn btn-outline-dark">Back</a>
+{% endblock content %}
