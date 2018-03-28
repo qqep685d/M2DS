@@ -1,0 +1,51 @@
+{% extends "mm/base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+    {% for population_rec in population_recs %}
+        <h4 class="mt-4 mb-5 border-bottom">Population Record</h4>
+        <div class="row">
+            <div class="col-md-2"><h5>Record ID: {{population_rec.id}}</h5></div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    <tr><td style="width:200px;">Name</td><td>{{population_rec.name}}</td></tr>
+                    <tr><td>Year</td><td>{{population_rec.year}}</td></tr>
+                    <tr><td>Place</td><td>{{population_rec.place}}</td></tr>
+                    <tr><td>Cultivator</td><td>{{population_rec.cultivator}}</td></tr>
+                    <tr><td>Description</td><td>{{population_rec.description}}</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h4 class="mt-4 mb-5 border-bottom">Upload Dataset</h4>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td class="col-md-9"><input type="file" name="file"></td>
+                    <td class="col-md-3"><input type="submit" value="Upload"></td>
+                </tr>
+                <div class="offset-md-3 col-md-3"></div>
+            </table>
+        </form>
+
+        {% if uploaded_file %}
+            <h4 class="mt-4 mb-5 border-bottom">Import Dataset to Database</h4>
+            <table class="table table-bordered">
+                <tr>
+                    <td>Dataset</td>
+                    <td class="col-md-8">{{uploaded_file}}</td>
+                    <td class="col-md-2">
+                        <a href="{% url 'mm:population_confirm' population_id=population_rec.id %}" class="btn btn-info btn-sm">Compile</a>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+    {% endfor %}
+
+    <hr>
+
+    <a href="{% url 'mm:population_list' %}" class="btn btn-outline-dark">Back</a>
+{% endblock content %}

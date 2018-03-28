@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 
 
 class Population(models.Model):
-    year_number_regex = RegexValidator(regex=r'^[1-2][0-9][0-9][0-9]$', message='4-digits number')
+    year_number_regex = RegexValidator(regex=r'^[0-9]{0,4}$', message='Year number')
 
     id     = models.AutoField('ID', primary_key=True)
     name   = models.CharField('Name', max_length=50)
@@ -33,6 +33,7 @@ class Strain(models.Model):
     def __str__(self):
         return self.name
 
+
 class Marker(models.Model):
     marker_types = (('g', 'Genetic Marker'), ('p', 'Phenotypic Marker'))
 
@@ -47,6 +48,7 @@ class Marker(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class MSTable(models.Model):
     id     = models.AutoField('ID', primary_key=True)

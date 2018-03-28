@@ -11,10 +11,11 @@
 
 <body>
     <div class="container">
+        <h1><a href="{% url 'mm:index' %}" class="text-dark" style="text-decoration: none;">M2DS <span style="font-size:12pt;">Marker Management Database System | version 0.1</span></a></h1>
         <!-- Navigation bar -->
         <ul class="nav nav-tabs">
             <li class="nav-item"><a href="{% url 'mm:index' %}" class="nav-link {% ifequal active_navi 0 %} active {% endifequal %}">Home</a></li>
-            <li class="nav-item"><a href="{% url 'mm:population_list' %}" class="nav-link {% ifequal active_navi 1 %} active {% endifequal %}">Populations</a></li>
+            <li class="nav-item"><a href="{% url 'mm:population_list' %}" class="nav-link {% ifequal active_navi 1 %} active {% endifequal %}">Population</a></li>
             <li class="nav-item"><a href="{% url 'mm:strain_list' %}" class="nav-link {% ifequal active_navi 2 %} active {% endifequal %}">Strains</a></li>
             <li class="nav-item"><a href="#" class="nav-link {% ifequal active_navi 3 %} active {% endifequal %}">Markers</a></li>
             <li class="nav-item"><a href="#" class="nav-link {% ifequal active_navi 4 %} active {% endifequal %}">Table</a></li>

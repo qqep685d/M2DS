@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 
 {% block content %}
-    <h4 class="mt-4 mb-5 border-bottom">Edit | Cultivation Record</h4>
+    <h4 class="mt-4 mb-5 border-bottom">Edit | Population Record</h4>
     {% if population_id %}
     <form action="{% url 'mm:population_edit' population_id=population_id %}" method="post">
     {% else %}
@@ -16,5 +16,6 @@
             </div>
         </div>
     </form>
+    <hr>
     <a href="{% url 'mm:population_list' %}" class="btn btn-outline-dark">Back</a>
 {% endblock content %}
