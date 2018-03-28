@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 
 import sys, os
 import pandas as pd
+import numpy as np
 
 from mm.models import Population, Strain, Marker, MSTable
 from mm.forms import PopulationForm
@@ -94,18 +95,32 @@ def dataset_upload(request, population_id):
 
 
 def dataset_import(request, population_id):
+    import sqlite3
+
+    population = get_object_or_404(Population, pk=population_id)
+
     if request.method == 'POST':
         filename = request.POST['filename']
 
         f_in = UPLOADE_DIR + filename
         df = pd.read_csv(f_in, sep='\t', header=0)
 
-        # dfの処理 -> DBに入れる
-        #return HttpResponse(list(df.columns)[0])
+        N_strains = len(df.columns[2:])
+        N_markers = len(df['MARKER'])
 
-#    population = get_object_or_404(Population, pk=population_id)
+        dict_strains = {
+            'name'       : list(df.columns[2:]),
+            'population' : population.id,
+            'source'     : np.zeros(N_strains).tolist(),
+            'taxon'      : np.zeros(N_strains).tolist(),
+            'description': np.zeros(N_strains).tolist(),
+        }
+        df_strains = pd.DataFrame(dict_strains, columns=['name', 'population', 'source', 'taxon', 'description'])
 
-
+        # dataframe to sqlite3
+        conn = sqlite3.connect("db.sqlite3")     # ここパス修正
+        df_strains.to_sql('{table}'.format(table='Strains'), conn, if_exists='append')
+        #return HttpResponse(df_strains)
 
 
 #--- Strain ---
