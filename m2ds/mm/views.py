@@ -1,10 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 
 import sys, os
+import pandas as pd
 
 from mm.models import Population, Strain, Marker, MSTable
-from mm.forms import PopulationForm, UploadFileForm
+from mm.forms import PopulationForm
+
+UPLOADE_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/upload_files/'
 
 #--- Index ---
 def index(request):
@@ -48,11 +51,11 @@ def population_edit(request, population_id=None):
 
 def population_confirm(request, population_id):
     """ Confirm """
-    population_recs = Population.objects.filter(id=population_id)
+    population = get_object_or_404(Population, pk=population_id)
     return render(
         request,
         'mm/population_confirm.html',
-        {'population_recs' : population_recs, 'population_id' : population_id, 'active_navi' : 1}
+        {'population' : population, 'population_id' : population_id, 'active_navi' : 1}
     )
 
 
@@ -63,12 +66,10 @@ def population_del(request, population_id):
     return redirect('mm:population_list')
 
 
-
-def population_upload(request, population_id):
+#--- Dataset ---
+def dataset_upload(request, population_id):
     """ Upload Dataset """
-    UPLOADE_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/upload_files/'
-
-    population_recs = Population.objects.filter(id=population_id)
+    population = get_object_or_404(Population, pk=population_id)
 
     if request.FILES:
         upload_file = request.FILES['file']
@@ -80,16 +81,31 @@ def population_upload(request, population_id):
 
         return render(
             request,
-            'mm/population_upload.html',
-            {'population_recs' : population_recs, 'uploaded_file' : upload_file.name, 'active_navi' : 1}
+            'mm/dataset_upload.html',
+            {'population' : population, 'uploaded_file' : upload_file.name, 'active_navi' : 1}
         )
 
     else:
         return render(
             request,
-            'mm/population_upload.html',
-            {'population_recs' : population_recs, 'active_navi' : 1}
+            'mm/dataset_upload.html',
+            {'population' : population, 'active_navi' : 1}
         )
+
+
+def dataset_import(request, population_id):
+    if request.method == 'POST':
+        filename = request.POST['filename']
+
+        f_in = UPLOADE_DIR + filename
+        df = pd.read_csv(f_in, sep='\t', header=0)
+
+        # dfの処理 -> DBに入れる
+        #return HttpResponse(list(df.columns)[0])
+
+#    population = get_object_or_404(Population, pk=population_id)
+
+
 
 
 #--- Strain ---

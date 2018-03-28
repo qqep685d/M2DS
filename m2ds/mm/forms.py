@@ -7,8 +7,3 @@ class PopulationForm(ModelForm):
     class Meta:
         model = Population
         fields = ('name', 'year', 'place', 'cultivator', 'description',)
-
-class UploadFileForm(Form):
-    """Form for File Uploader"""
-    title = forms.CharField(max_length=50)
-    file  = forms.FileField()

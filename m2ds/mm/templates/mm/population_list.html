@@ -22,7 +22,7 @@
             <td>{{ population_rec.place }}</td>
             <td>{{ population_rec.cultivator }}</td>
             <td>
-                <a href="{% url 'mm:population_upload' population_id=population_rec.id %}" class="btn btn-outline-dark btn-sm">Upload</a>
+                <a href="{% url 'mm:dataset_upload' population_id=population_rec.id %}" class="btn btn-outline-dark btn-sm">Upload</a>
                 <a href="{% url 'mm:population_edit' population_id=population_rec.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
                 <a href="{% url 'mm:population_confirm' population_id=population_rec.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
             </td>
