@@ -102,33 +102,63 @@ def dataset_import(request, population_id):
     if request.method == 'POST':
         filename = request.POST['filename']
 
+        # dataset into pandas-dataframe
         f_in = UPLOADE_DIR + filename
         df = pd.read_csv(f_in, sep='\t', header=0)
+        strain_names  = list(df.columns[2:])
+        marker_names  = list(df['MARKER'])
+        marker_mtypes = list(df['TYPE'])
 
-        N_strains = len(df.columns[2:])
-        N_markers = len(df['MARKER'])
+        # update or insert data from pandas-dataframe
+        for n in strain_names:
+            Strain.objects.update_or_create(name=n, population=Population(id=population.id))
+        for n, t in zip(marker_names, marker_mtypes):
+            Marker.objects.update_or_create(name=n, population=Population(id=population.id), defaults={'mtype':t})
 
-        dict_strains = {
-            'name'       : list(df.columns[2:]),
-            'population' : population.id,
-            'source'     : np.zeros(N_strains).tolist(),
-            'taxon'      : np.zeros(N_strains).tolist(),
-            'description': np.zeros(N_strains).tolist(),
-        }
-        df_strains = pd.DataFrame(dict_strains, columns=['name', 'population', 'source', 'taxon', 'description'])
-
-        # dataframe to sqlite3
-        conn = sqlite3.connect("db.sqlite3")     # ここパス修正
-        df_strains.to_sql('{table}'.format(table='Strains'), conn, if_exists='append')
-        #return HttpResponse(df_strains)
+        return redirect('mm:population_list')
 
 
 #--- Strain ---
-def strain_list(request):
+def strain_list(request, population_id=None):
     """ Show List """
-    strain_recs = Strain.objects.all().order_by('id')
-    return render(
-        request,
-        'mm/strain_list.html',
-        {'strain_recs': strain_recs, 'active_navi' : 2}
-    )
+    if population_id:
+        strain_recs = Strain.objects.filter(population=population_id).order_by('population', 'name',)
+        population_name = get_object_or_404(Population, pk=population_id).name
+
+        return render(
+            request,
+            'mm/strain_list.html',
+            {'strain_recs': strain_recs, 'population_name': population_name, 'active_navi' : 2}
+        )
+
+    else:
+        strain_recs = Strain.objects.all().order_by('population', 'name',)
+
+        return render(
+            request,
+            'mm/strain_list.html',
+            {'strain_recs': strain_recs, 'active_navi' : 2}
+        )
+
+
+#--- Marker ---
+def marker_list(request, population_id=None):
+    """ Show List """
+    if population_id:
+        marker_recs = Marker.objects.filter(population=population_id).order_by('population', 'name',)
+        population_name = get_object_or_404(Population, pk=population_id).name
+
+        return render(
+            request,
+            'mm/marker_list.html',
+            {'marker_recs': marker_recs, 'population_name': population_name, 'active_navi' : 3}
+        )
+
+    else:
+        marker_recs = Marker.objects.all().order_by('population', 'name',)
+
+        return render(
+            request,
+            'mm/marker_list.html',
+            {'marker_recs': marker_recs, 'active_navi' : 3}
+        )

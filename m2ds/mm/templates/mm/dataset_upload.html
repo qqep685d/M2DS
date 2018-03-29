@@ -7,13 +7,13 @@
             <div class="col-md-2"><h5>Record ID: {{population.id}}</h5></div>
         </div>
         <div class="table-responsive">
-            <table class="table table-striped table-bordered">
+            <table class="table table-bordered">
                 <tbody>
-                    <tr><td style="width:200px;">Name</td><td>{{population.name}}</td></tr>
-                    <tr><td>Year</td><td>{{population.year}}</td></tr>
-                    <tr><td>Place</td><td>{{population.place}}</td></tr>
-                    <tr><td>Cultivator</td><td>{{population.cultivator}}</td></tr>
-                    <tr><td>Description</td><td>{{population.description}}</td></tr>
+                    <tr><td class="bg-light text-dark" style="width:200px;">Name</td><td>{{population.name}}</td></tr>
+                    <tr><td class="bg-light text-dark">Year</td><td>{{population.year}}</td></tr>
+                    <tr><td class="bg-light text-dark">Place</td><td>{{population.place}}</td></tr>
+                    <tr><td class="bg-light text-dark">Cultivator</td><td>{{population.cultivator}}</td></tr>
+                    <tr><td class="bg-light text-dark">Description</td><td>{{population.description}}</td></tr>
                 </tbody>
             </table>
         </div>
@@ -35,7 +35,7 @@
                 {% csrf_token %}
                 <table class="table table-bordered">
                     <tr>
-                        <td>Dataset</td>
+                        <td class="bg-light text-dark">Dataset</td>
                         <td class="col-md-8">
                             {{uploaded_file}}
                             <div style="display:none;"><input type="text" name="filename" value="{{uploaded_file}}"></div>

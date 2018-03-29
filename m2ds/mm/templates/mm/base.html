@@ -17,7 +17,7 @@
             <li class="nav-item"><a href="{% url 'mm:index' %}" class="nav-link {% ifequal active_navi 0 %} active {% endifequal %}">Home</a></li>
             <li class="nav-item"><a href="{% url 'mm:population_list' %}" class="nav-link {% ifequal active_navi 1 %} active {% endifequal %}">Population</a></li>
             <li class="nav-item"><a href="{% url 'mm:strain_list' %}" class="nav-link {% ifequal active_navi 2 %} active {% endifequal %}">Strains</a></li>
-            <li class="nav-item"><a href="#" class="nav-link {% ifequal active_navi 3 %} active {% endifequal %}">Markers</a></li>
+            <li class="nav-item"><a href="{% url 'mm:marker_list' %}" class="nav-link {% ifequal active_navi 3 %} active {% endifequal %}">Markers</a></li>
             <li class="nav-item"><a href="#" class="nav-link {% ifequal active_navi 4 %} active {% endifequal %}">Table</a></li>
             <li class="nav-item"><a href="#" class="nav-link {% ifequal active_navi 5 %} active {% endifequal %}">Import / Export</a></li>
         </ul>

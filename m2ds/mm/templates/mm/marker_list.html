@@ -1,0 +1,30 @@
+{% extends "mm/base.html" %}
+
+{% block content %}
+    <h4 class="mt-4 border-bottom">Marker Records</h4>
+    {% if population_name %}
+    <div class="row">
+        <div class="col-md-12"><h5>Markers of {{population_name}}</h5></div>
+    </div>
+    {% endif %}
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+            <th scope="col">Population</th>
+            <th scope="col">Marker</th>
+            <th scope="col">Type</th>
+            <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for marker_rec in marker_recs %}
+        <tr>
+            <td>{{ marker_rec.population }}</td>
+            <th scope="row"><a href="">{{ marker_rec.name }}</a></th>
+            <td>{{ marker_rec.mtype }}</td>
+            <td>{{ marker_rec.description }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock content %}

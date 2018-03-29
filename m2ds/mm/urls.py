@@ -20,10 +20,12 @@ urlpatterns = [
 
     # Strain
     path('strain/', views.strain_list, name='strain_list'),    # Show
+    path('strain/pop=<int:population_id>', views.strain_list, name='strain_list_subset'),    # Show
 #    path('strain/add/', views.strain_edit, name='strain_add'), # Add
 #    path('strain/edit/<int:strain_id>/', views.strain_edit, name='strain_edit'),  # Edit
 #    path('strain/del/<int:strain_id>/', views.strain_del, name='strain_del'),     # Delete
 
     # Marker
-
+    path('marker/', views.marker_list, name='marker_list'),    # Show
+    path('marker/pop=<int:population_id>', views.marker_list, name='marker_list_subset'),    # Show
 ]
