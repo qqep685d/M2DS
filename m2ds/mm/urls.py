@@ -28,4 +28,8 @@ urlpatterns = [
     # Marker
     path('marker/', views.marker_list, name='marker_list'),    # Show
     path('marker/pop=<int:population_id>', views.marker_list, name='marker_list_subset'),    # Show
+
+    # MS Table
+    path('mstable/', views.mstable_list, name='mstable_list'),    # Show
+    path('mstable/pop=<int:population_id>', views.mstable_list, name='mstable_list_subset'),    # Show
 ]

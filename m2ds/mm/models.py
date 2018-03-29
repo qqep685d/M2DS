@@ -55,10 +55,10 @@ class MSTable(models.Model):
     strain = models.ForeignKey(Strain, to_field='id', related_name='strains', on_delete=models.CASCADE)
     marker = models.ForeignKey(Marker, to_field='id', related_name='markers', on_delete=models.CASCADE)
     value  = models.CharField('Value', max_length=10, null=True, blank=True)
-    description = models.TimeField('Description', blank=True)
+    description = models.TextField('Description', null=True, blank=True)
 
     class Meta:
         unique_together = ('strain', 'marker')
 
     def __str__(self):
-        return (self.strain, self.marker)
+        return str(self.id)

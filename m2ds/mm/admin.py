@@ -20,8 +20,11 @@ admin.site.register(Strain, StrainAdmin)
 class MarkerAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'population', 'mtype',)  # Display
     list_display_links = ('id', 'name',)  # Link
-admin.site.register(Marker)
+admin.site.register(Marker, MarkerAdmin)
 
 
 #--- Management ---
-admin.site.register(MSTable)
+class MSTableAdmin(admin.ModelAdmin):
+    list_display = ('id', 'strain', 'marker', 'value',)  # Display
+    list_display_links = ('id', 'strain', 'marker',)  # Link
+admin.site.register(MSTable, MSTableAdmin)

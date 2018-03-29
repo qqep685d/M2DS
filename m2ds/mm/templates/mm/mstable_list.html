@@ -1,0 +1,7 @@
+{% extends "mm/base.html" %}
+
+{% block content %}
+    <h4 class="mt-4 border-bottom">Table of {% if population_name %} of {{population_name}}{% endif %}</h4>
+
+    {{ pivot_html | safe }}
+{% endblock content %}
