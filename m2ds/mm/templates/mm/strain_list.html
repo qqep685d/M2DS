@@ -1,9 +1,28 @@
 {% extends "mm/base.html" %}
 
 {% block content %}
+    <form action="{% url 'mm:strain_list' %}" method="get">
+    <div class="row" style="margin-top:10px; margin-bottom:10px;">
+        <div class="col-md-1">
+            Population:
+        </div>
+        <div class="col-md-4">
+            <select class="form-control" name="population_id">
+                <option value="">--------</option>
+                {% for pop in population %}
+                    <option value={{pop.id}}>{{pop.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Select</button>
+        </div>
+    </div>
+    </form>
+
     <h4 class="mt-4 border-bottom">Strain Records{% if population_name %} of {{population_name}}{% endif %}</h4>
 
-    <table class="table table-striped table-bordered table-sm">
+    <table class="table table-bordered table-sm table-hover">
       <thead>
         <tr>
             <th scope="col">Population</th>
@@ -15,7 +34,7 @@
         {% for strain_rec in strain_recs %}
         <tr>
             <td>{{ strain_rec.population }}</td>
-            <th scope="row"><a href="">{{ strain_rec.name }}</a></th>
+            <td>{{ strain_rec.name }}</td>
             <td>{{ strain_rec.taxon }}</td>
         </tr>
         {% endfor %}

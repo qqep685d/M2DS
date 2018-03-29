@@ -1,7 +1,26 @@
 {% extends "mm/base.html" %}
 
 {% block content %}
-    <h4 class="mt-4 border-bottom">Table of {% if population_name %} of {{population_name}}{% endif %}</h4>
+    <form action="{% url 'mm:mstable_list' %}" method="get">
+    <div class="row" style="margin-top:10px; margin-bottom:10px;">
+        <div class="col-md-1">
+            Population:
+        </div>
+        <div class="col-md-4">
+            <select class="form-control" name="population_id">
+                <option value="">--------</option>
+                {% for pop in population %}
+                    <option value={{pop.id}}>{{pop.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Select</button>
+        </div>
+    </div>
+    </form>
+
+    <h4 class="mt-4 border-bottom">Table{% if population_name %} of {{population_name}}{% endif %}</h4>
 
     {{ pivot_html | safe }}
 {% endblock content %}

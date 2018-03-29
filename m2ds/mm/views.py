@@ -130,6 +130,11 @@ def dataset_import(request, population_id):
 
 #--- Strain ---
 def strain_list(request, population_id=None):
+    population = Population.objects.all().order_by('name')
+
+    if request.method == 'GET':
+        population_id = request.GET.get('population_id', None)
+
     """ Show List """
     if population_id:
         strain_recs = Strain.objects.filter(population=population_id).order_by('population', 'name',)
@@ -138,7 +143,7 @@ def strain_list(request, population_id=None):
         return render(
             request,
             'mm/strain_list.html',
-            {'strain_recs': strain_recs, 'population_name': population_name, 'active_navi' : 2}
+            {'strain_recs': strain_recs, 'population_name': population_name, 'population':population, 'active_navi' : 2}
         )
 
     else:
@@ -147,13 +152,18 @@ def strain_list(request, population_id=None):
         return render(
             request,
             'mm/strain_list.html',
-            {'strain_recs': strain_recs, 'active_navi' : 2}
+            {'strain_recs': strain_recs, 'population':population, 'active_navi' : 2}
         )
 
 
 #--- Marker ---
 def marker_list(request, population_id=None):
     """ Show List """
+    population = Population.objects.all().order_by('name')
+
+    if request.method == 'GET':
+        population_id = request.GET.get('population_id', None)
+
     if population_id:
         genotype_marker_recs = Marker.objects.filter(population=population_id, mtype='g').order_by('population', 'name',)
         phenotype_marker_recs = Marker.objects.filter(population=population_id, mtype='p').order_by('population', 'name',)
@@ -162,7 +172,13 @@ def marker_list(request, population_id=None):
         return render(
             request,
             'mm/marker_list.html',
-            {'genotype_marker_recs': genotype_marker_recs, 'phenotype_marker_recs': phenotype_marker_recs, 'population_name': population_name, 'active_navi' : 3}
+            {
+                'genotype_marker_recs': genotype_marker_recs,
+                'phenotype_marker_recs': phenotype_marker_recs,
+                'population_name': population_name,
+                'population':population,
+                'active_navi' : 3,
+            }
         )
 
     else:
@@ -172,24 +188,43 @@ def marker_list(request, population_id=None):
         return render(
             request,
             'mm/marker_list.html',
-            {'genotype_marker_recs': genotype_marker_recs, 'phenotype_marker_recs': phenotype_marker_recs, 'active_navi' : 3}
+            {
+                'genotype_marker_recs': genotype_marker_recs,
+                'phenotype_marker_recs': phenotype_marker_recs,
+                'population':population,
+                'active_navi' : 3,
+            }
         )
 
 
 #--- MS Table ---
 def mstable_list(request, population_id=None):
+    population = Population.objects.all().order_by('name')
+
+    if request.method == 'GET':
+        population_id = request.GET.get('population_id', None)
+        
     """ Show List """
     if population_id:
         population_name = get_object_or_404(Population, pk=population_id).name
         ms_recs = MSTable.objects.filter(strain__population__id=population_id, marker__population__id=population_id)
         df = read_frame(ms_recs)
         pivot_table = df.pivot(index='marker', columns='strain', values='value')
-        pivot_html  = pivot_table.to_html(index=True, classes=["table-bordered", "table-striped"], col_space=200, na_rep='-')
+        pivot_html  = pivot_table.to_html(index=True, classes=["table", "table-bordered", "table-sm", "table-hover"], col_space=200, na_rep='-')
 
         return render(
             request,
             'mm/mstable_list.html',
-            {'pivot_html': pivot_html, 'population_name': population_name, 'active_navi' : 4}
+            {
+                'pivot_html': pivot_html,
+                'population_name': population_name,
+                'population' : population,
+                'active_navi' : 4,
+            }
         )
     else:
-        return redirect('mm:population_list')
+        return render(
+            request,
+            'mm/mstable_list.html',
+            {'population' : population, 'active_navi' : 4}
+        )
