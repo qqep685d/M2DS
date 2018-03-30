@@ -1,0 +1,31 @@
+{% extends "mm/base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <h4 class="mt-4 mb-5 border-bottom">Confirm | Marker Record</h4>
+    <div class="row">
+        <div class="col-md-12"><h5>Record ID: {{marker.id}}</h5></div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tbody>
+                <tr><td style="width:200px;">Name</td><td>{{marker.name}}</td></tr>
+                <tr><td>Population</td><td>{{marker.population}}</td></tr>
+                <tr><td>Type</td><td>{{marker.get_mtype_display}}</td></tr>
+                <tr><td>Description</td><td>{{marker.description}}</td></tr>
+            </tbody>
+        </table>
+    </div>
+    {% if marker_id %}
+    <form action="{% url 'mm:marker_del' marker_id=marker_id %}" method="post">
+    <div class="row">
+        <div class="col-md-2">
+            <a href="{% url 'mm:marker_list' %}" class="btn btn-outline-dark">Back</a>
+        </div>
+        <div class="offset-md-8 col-md-2">
+            <a href="{% url 'mm:marker_del'  marker_id=marker.id %}" class="btn btn-outline-danger">Delete</a>
+        </div>
+    </div>
+    </form>
+    {% endif %}
+{% endblock content %}

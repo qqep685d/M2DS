@@ -1,0 +1,22 @@
+{% extends "mm/base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <h4 class="mt-4 mb-5 border-bottom">Edit | Marker-Strain Table</h4>
+
+    <form action="{% url 'mm:mstable_edit' mstable_id=mstable_id %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' %}
+        <div class="row">
+            <div class="offset-md-3 col-md-3">
+                <button type="submit" class="btn btn-outline-primary">OK</button>
+            </div>
+        </div>
+    </form>
+
+    <hr>
+
+    <form action="{% url 'mm:mstable_list' %}" method="get">
+        <button type="submit" class="btn btn-outline-dark">Back</button>
+    </form>
+{% endblock content %}

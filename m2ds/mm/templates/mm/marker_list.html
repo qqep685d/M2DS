@@ -1,14 +1,12 @@
 {% extends "mm/base.html" %}
+{% load bootstrap4 %}
 
 {% block content %}
     <form action="{% url 'mm:marker_list' %}" method="get">
     <div class="row" style="margin-top:10px; margin-bottom:10px;">
-        <div class="col-md-1">
-            Population:
-        </div>
         <div class="col-md-4">
             <select class="form-control" name="population_id">
-                <option value="">--------</option>
+                <option value=""> --- select population --- </option>
                 {% for pop in population %}
                     <option value={{pop.id}}>{{pop.name}}</option>
                 {% endfor %}
@@ -31,6 +29,7 @@
             <th scope="col">Population</th>
             <th scope="col">Marker</th>
             <th scope="col">Type</th>
+            <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -39,6 +38,10 @@
             <td>{{ genotype_marker_rec.population }}</td>
             <td>{{ genotype_marker_rec.name }}</td>
             <td>{{ genotype_marker_rec.get_mtype_display }}</td>
+            <td>
+                <a href="{% url 'mm:marker_edit' marker_id=genotype_marker_rec.id %}" class="btn btn-outline-dark btn-sm">Edit</a>
+                <a href="{% url 'mm:marker_confirm' marker_id=genotype_marker_rec.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+            </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -53,6 +56,7 @@
             <th scope="col">Population</th>
             <th scope="col">Marker</th>
             <th scope="col">Type</th>
+            <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -61,6 +65,10 @@
             <td>{{ phenotype_marker_rec.population }}</td>
             <td>{{ phenotype_marker_rec.name }}</td>
             <td>{{ phenotype_marker_rec.get_mtype_display }}</td>
+            <td>
+                <a href="{% url 'mm:marker_edit' marker_id=phenotype_marker_rec.id %}" class="btn btn-outline-dark btn-sm">Edit</a>
+                <a href="{% url 'mm:marker_confirm' marker_id=phenotype_marker_rec.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+            </td>
         </tr>
         {% endfor %}
       </tbody>
