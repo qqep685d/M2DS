@@ -8,7 +8,7 @@ import itertools
 from django_pandas.io import read_frame
 
 from mm.models import Population, Strain, Marker, MSTable
-from mm.forms import PopulationForm
+from mm.forms import PopulationForm, StrainForm, MarkerForm, MSTableForm
 
 UPLOADE_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/upload_files/'
 
@@ -132,7 +132,7 @@ def dataset_import(request, population_id):
 def strain_list(request, population_id=None):
     population = Population.objects.all().order_by('name')
 
-    if request.method == 'GET':
+    if request.method == 'GET' and request.GET.get('population_id', None):
         population_id = request.GET.get('population_id', None)
 
     """ Show List """
@@ -156,12 +156,54 @@ def strain_list(request, population_id=None):
         )
 
 
+def strain_edit(request, strain_id):
+    """ Edit """
+    if strain_id:
+        strain = get_object_or_404(Strain, pk=strain_id)
+    else:
+        return redirect('mm:strain_list')
+
+    if request.method == 'POST':
+        form = StrainForm(request.POST, instance=strain)
+        if form.is_valid():
+            strain = form.save(commit=False)
+            strain.save()
+            return redirect('mm:strain_list')
+    else:
+        ### When request is "GET"
+        form = StrainForm(instance=strain)
+
+    return render(
+        request,
+        'mm/strain_edit.html',
+        {'form' : form, 'strain_id' : strain_id, 'active_navi' : 2}
+    )
+
+
+def strain_confirm(request, strain_id):
+    """ Confirm """
+    strain = get_object_or_404(Strain, pk=strain_id)
+    return render(
+        request,
+        'mm/strain_confirm.html',
+        {'strain' : strain, 'strain_id' : strain_id, 'active_navi' : 2}
+    )
+
+
+def strain_del(request, strain_id):
+    """ Delete """
+    strain = get_object_or_404(Strain, pk=strain_id)
+    strain.delete()
+    return redirect('mm:strain_list')
+
+
+
 #--- Marker ---
 def marker_list(request, population_id=None):
     """ Show List """
     population = Population.objects.all().order_by('name')
 
-    if request.method == 'GET':
+    if request.method == 'GET' and request.GET.get('population_id', None):
         population_id = request.GET.get('population_id', None)
 
     if population_id:
@@ -197,34 +239,163 @@ def marker_list(request, population_id=None):
         )
 
 
+def marker_edit(request, marker_id):
+    """ Edit """
+    if marker_id:
+        marker = get_object_or_404(Marker, pk=marker_id)
+    else:
+        return redirect('mm:marker_list')
+
+    if request.method == 'POST':
+        form = MarkerForm(request.POST, instance=marker)
+        if form.is_valid():
+            marker = form.save(commit=False)
+            marker.save()
+            return redirect('mm:marker_list')
+    else:
+        ### When request is "GET"
+        form = MarkerForm(instance=marker)
+
+    return render(
+        request,
+        'mm/marker_edit.html',
+        {'form' : form, 'marker_id' : marker_id, 'active_navi' : 3}
+    )
+
+
+def marker_confirm(request, marker_id):
+    """ Confirm """
+    marker = get_object_or_404(Marker, pk=marker_id)
+    return render(
+        request,
+        'mm/marker_confirm.html',
+        {'marker' : marker, 'marker_id' : marker_id, 'active_navi' : 3}
+    )
+
+
+def marker_del(request, marker_id):
+    """ Delete """
+    marker = get_object_or_404(Marker, pk=marker_id)
+    marker.delete()
+    return redirect('mm:marker_list')
+
+
 #--- MS Table ---
+def make_pivot_table(population_id):
+    ms_recs = MSTable.objects.filter(strain__population__id=population_id, marker__population__id=population_id)
+    df = read_frame(ms_recs)
+    pivot_table = df.pivot(index='marker', columns='strain', values='value').fillna('-')
+    pivot_html  = pivot_table.to_html(index=True, classes=["table", "table-bordered", "table-sm", "table-hover"], col_space=200, na_rep='-')
+    return pivot_html
+
+
 def mstable_list(request, population_id=None):
     population = Population.objects.all().order_by('name')
 
-    if request.method == 'GET':
+    if request.method == 'GET' and request.GET.get('population_id', None):
         population_id = request.GET.get('population_id', None)
-        
+
     """ Show List """
     if population_id:
-        population_name = get_object_or_404(Population, pk=population_id).name
-        ms_recs = MSTable.objects.filter(strain__population__id=population_id, marker__population__id=population_id)
-        df = read_frame(ms_recs)
-        pivot_table = df.pivot(index='marker', columns='strain', values='value')
-        pivot_html  = pivot_table.to_html(index=True, classes=["table", "table-bordered", "table-sm", "table-hover"], col_space=200, na_rep='-')
-
+        table_pop = get_object_or_404(Population, pk=population_id)
+        strain_recs = Strain.objects.filter(population__id=population_id)
+        marker_recs = Marker.objects.filter(population__id=population_id)
+        pivot_html = make_pivot_table(population_id)
         return render(
             request,
             'mm/mstable_list.html',
             {
                 'pivot_html': pivot_html,
-                'population_name': population_name,
+                'table_pop': table_pop,
                 'population' : population,
                 'active_navi' : 4,
+                'strain_recs' : strain_recs,
+                'marker_recs' : marker_recs,
             }
         )
+
     else:
         return render(
             request,
             'mm/mstable_list.html',
             {'population' : population, 'active_navi' : 4}
         )
+
+
+def mstable_view(request, strain_id=None, marker_id=None, population_id=None):
+    if request.method == 'GET':
+        population_id = request.GET.get('population_id', None)
+        strain_id = request.GET.get('strain_id', None)
+        marker_id = request.GET.get('marker_id', None)
+    else:
+        return redirect('mm:mstable_list')
+
+    if not population_id:
+        return redirect('mm:mstable_list')
+
+    population = Population.objects.all().order_by('name')
+    table_pop  = get_object_or_404(Population, pk=population_id)
+
+    if strain_id and marker_id:
+        recs = MSTable.objects.filter(marker__id=marker_id, strain__id=strain_id).order_by('marker', 'strain')
+    elif strain_id:
+        recs = MSTable.objects.filter(strain__id=strain_id).order_by('strain')
+    elif marker_id:
+        recs = MSTable.objects.filter(marker__id=marker_id).order_by('marker')
+    else:
+        strain_recs = Strain.objects.filter(population__id=population_id)
+        marker_recs = Marker.objects.filter(population__id=population_id)
+        pivot_html = make_pivot_table(population_id)
+        return render(
+            request,
+            'mm/mstable_list.html',
+            {
+                'pivot_html'  : pivot_html,
+                'population'  : population,
+                'table_pop'   : table_pop,
+                'strain_recs' : strain_recs,
+                'marker_recs' : marker_recs,
+                'active_navi' : 4,
+            }
+        )
+    #return HttpResponse(marker_id)
+    return render(
+        request,
+        'mm/mstable_view.html',
+        {
+            'recs' : recs,
+            'table_pop_id': population_id,
+            'strain_id'   : strain_id,
+            'marker_id'   : marker_id,
+            'active_navi' : 4,
+        }
+    )
+
+
+def mstable_edit(request, mstable_id,):
+    """ Edit """
+    if mstable_id:
+        mstable = get_object_or_404(MSTable, pk=mstable_id)
+    else:
+        return redirect('mm:mstable_list')
+
+    if request.method == 'POST':
+        form = MSTableForm(request.POST, instance=mstable)
+        if form.is_valid():
+            mstable = form.save(commit=False)
+            mstable.save()
+            return redirect('mm:mstable_list')
+            
+    else:
+        ### When request is "GET"
+        form = MSTableForm(instance=mstable)
+
+    return render(
+        request,
+        'mm/mstable_edit.html',
+        {
+            'form' : form,
+            'mstable_id' : mstable_id,
+            'active_navi' : 4
+        }
+    )

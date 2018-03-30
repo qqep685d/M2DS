@@ -1,14 +1,12 @@
 {% extends "mm/base.html" %}
+{% load bootstrap4 %}
 
 {% block content %}
     <form action="{% url 'mm:mstable_list' %}" method="get">
     <div class="row" style="margin-top:10px; margin-bottom:10px;">
-        <div class="col-md-1">
-            Population:
-        </div>
         <div class="col-md-4">
             <select class="form-control" name="population_id">
-                <option value="">--------</option>
+                <option value=""> --- select population --- </option>
                 {% for pop in population %}
                     <option value={{pop.id}}>{{pop.name}}</option>
                 {% endfor %}
@@ -20,7 +18,34 @@
     </div>
     </form>
 
-    <h4 class="mt-4 border-bottom">Table{% if population_name %} of {{population_name}}{% endif %}</h4>
+    <h4 class="mt-4 border-bottom">Marker-Strain Table{% if table_pop %} of {{table_pop.name}}{% endif %}</h4>
 
-    {{ pivot_html | safe }}
+    {% if table_pop %}
+        <form action="{% url 'mm:mstable_view' %}" method="get">    <!--ここeditに変えていく-->
+        <div class="row" style="margin-top:10px; margin-bottom:10px;">
+            <input type="hidden" name="population_id" value="{{table_pop.id}}"></input>
+            <div class="col-md-4">
+                <select class="form-control" name="marker_id">
+                    <option value=""> --- select marker --- </option>
+                    {% for m in marker_recs %}
+                        <option value="{{m.id}}">{{m.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control" name="strain_id">
+                    <option value=""> --- select strain --- </option>
+                    {% for s in strain_recs %}
+                        <option value="{{s.id}}">{{s.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Select</button>
+            </div>
+        </div>
+        </form>
+
+        {{ pivot_html | safe }}
+    {% endif %}
 {% endblock content %}

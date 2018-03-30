@@ -1,14 +1,12 @@
 {% extends "mm/base.html" %}
+{% load bootstrap4 %}
 
 {% block content %}
     <form action="{% url 'mm:strain_list' %}" method="get">
     <div class="row" style="margin-top:10px; margin-bottom:10px;">
-        <div class="col-md-1">
-            Population:
-        </div>
         <div class="col-md-4">
             <select class="form-control" name="population_id">
-                <option value="">--------</option>
+                <option value=""> --- select population --- </option>
                 {% for pop in population %}
                     <option value={{pop.id}}>{{pop.name}}</option>
                 {% endfor %}
@@ -28,6 +26,7 @@
             <th scope="col">Population</th>
             <th scope="col">Strain</th>
             <th scope="col">Taxon</th>
+            <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -36,6 +35,10 @@
             <td>{{ strain_rec.population }}</td>
             <td>{{ strain_rec.name }}</td>
             <td>{{ strain_rec.taxon }}</td>
+            <td>
+                <a href="{% url 'mm:strain_edit' strain_id=strain_rec.id %}" class="btn btn-outline-dark btn-sm">Edit</a>
+                <a href="{% url 'mm:strain_confirm' strain_id=strain_rec.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+            </td>
         </tr>
         {% endfor %}
       </tbody>

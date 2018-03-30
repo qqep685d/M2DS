@@ -1,0 +1,34 @@
+{% extends "mm/base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <h4 class="mt-4 border-bottom">Marker-Strain Table</h4>
+
+    <table class="table table-bordered table-sm table-hover">
+      <thead>
+        <tr>
+            <th scope="col">Marker</th>
+            <th scope="col">Strain</th>
+            <th scope="col">Value</th>
+            <th scope="col">Description</th>
+            <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rec in recs %}
+        <tr>
+            <td>{{ rec.marker }}</td>
+            <td>{{ rec.strain }}</td>
+            <td>{{ rec.value }}</td>
+            <td>{{ rec.description }}</td>
+            <td>
+                <a href="{% url 'mm:mstable_edit' mstable_id=rec.id %}" class="btn btn-outline-dark btn-sm">Edit</a>
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <hr>
+    <a href="{% url 'mm:mstable_list_subset' population_id=table_pop_id %}" class="btn btn-outline-dark">Back</a>
+{% endblock content %}
