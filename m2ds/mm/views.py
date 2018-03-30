@@ -1,16 +1,24 @@
+# default library of django
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 
+# additional library for django
+from django_pandas.io import read_frame
+
+# default library of python
 import sys, os
 import pandas as pd
 import numpy as np
 import itertools
-from django_pandas.io import read_frame
+import urllib.request
 
+# original library for M2DS
 from mm.models import Population, Strain, Marker, MSTable
 from mm.forms import PopulationForm, StrainForm, MarkerForm, MSTableForm
 
-UPLOADE_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/upload_files/'
+# IO directory
+UPLOADE_DIR  = os.path.dirname(os.path.abspath(__file__)) + '/static/upload_files/'
+DOWNLOAD_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/download_files/'
 
 #--- Index ---
 def index(request):
@@ -67,65 +75,6 @@ def population_del(request, population_id):
     population = get_object_or_404(Population, pk=population_id)
     population.delete()
     return redirect('mm:population_list')
-
-
-#--- Dataset ---
-def dataset_upload(request, population_id):
-    """ Upload Dataset """
-    population = get_object_or_404(Population, pk=population_id)
-
-    if request.FILES:
-        upload_file = request.FILES['file']
-        path = os.path.join(UPLOADE_DIR, upload_file.name)
-        destination = open(path, 'wb')
-
-        for chunk in upload_file.chunks():
-            destination.write(chunk)
-
-        return render(
-            request,
-            'mm/dataset_upload.html',
-            {'population' : population, 'uploaded_file' : upload_file.name, 'active_navi' : 1}
-        )
-
-    else:
-        return render(
-            request,
-            'mm/dataset_upload.html',
-            {'population' : population, 'active_navi' : 1}
-        )
-
-
-def dataset_import(request, population_id):
-
-    population = get_object_or_404(Population, pk=population_id)
-
-    if request.method == 'POST':
-        filename = request.POST['filename']
-
-        # dataset into pandas-dataframe
-        f_in = UPLOADE_DIR + filename
-        df = pd.read_csv(f_in, sep='\t', header=0)
-        strain_names  = list(df.columns[2:])
-        marker_names  = list(df['MARKER'])
-        marker_mtypes = list(df['TYPE'])
-
-        # update or insert data from pandas-dataframe
-        for n in strain_names:
-            Strain.objects.update_or_create(name=n, population=Population(id=population.id))
-        for n, t in zip(marker_names, marker_mtypes):
-            Marker.objects.update_or_create(name=n, population=Population(id=population.id), defaults={'mtype':t})
-
-        ms_comb = itertools.product(strain_names, marker_names)
-        for c in ms_comb:
-            get_strain = Strain.objects.get(name=c[0], population=population.id)
-            get_marker = Marker.objects.get(name=c[1], population=population.id)
-            m = marker_names.index(get_marker.name)
-            s = get_strain.name
-            val = df.loc[m, s]
-            MSTable.objects.update_or_create(strain=Strain(id=get_strain.id), marker=Marker(id=get_marker.id), defaults={'value':val})
-
-        return redirect('mm:population_list')
 
 
 #--- Strain ---
@@ -281,12 +230,14 @@ def marker_del(request, marker_id):
 
 
 #--- MS Table ---
-def make_pivot_table(population_id):
+def make_pivot_table(population_id, outfmt='html'):
     ms_recs = MSTable.objects.filter(strain__population__id=population_id, marker__population__id=population_id)
     df = read_frame(ms_recs)
     pivot_table = df.pivot(index='marker', columns='strain', values='value').fillna('-')
-    pivot_html  = pivot_table.to_html(index=True, classes=["table", "table-bordered", "table-sm", "table-hover"], col_space=200, na_rep='-')
-    return pivot_html
+    if outfmt=='html':
+        pivot_dataset = pivot_table.to_html(index=True, classes=["table", "table-bordered", "table-sm", "table-hover"], col_space=200, na_rep='-')
+
+    return pivot_dataset
 
 
 def mstable_list(request, population_id=None):
@@ -385,7 +336,7 @@ def mstable_edit(request, mstable_id,):
             mstable = form.save(commit=False)
             mstable.save()
             return redirect('mm:mstable_list')
-            
+
     else:
         ### When request is "GET"
         form = MSTableForm(instance=mstable)
@@ -399,3 +350,109 @@ def mstable_edit(request, mstable_id,):
             'active_navi' : 4
         }
     )
+
+
+
+#--- Dataset ---
+def dataset_upload(request, population_id):
+    """ Upload Dataset """
+    population = get_object_or_404(Population, pk=population_id)
+
+    if request.FILES:
+        upload_file = request.FILES['file']
+        path = os.path.join(UPLOADE_DIR, upload_file.name)
+        destination = open(path, 'wb')
+
+        for chunk in upload_file.chunks():
+            destination.write(chunk)
+
+        return render(
+            request,
+            'mm/dataset_upload.html',
+            {'population' : population, 'uploaded_file' : upload_file.name, 'active_navi' : 1}
+        )
+
+    else:
+        return render(
+            request,
+            'mm/dataset_upload.html',
+            {'population' : population, 'active_navi' : 1}
+        )
+
+
+def dataset_import(request, population_id):
+
+    population = get_object_or_404(Population, pk=population_id)
+
+    if request.method == 'POST':
+        filename = request.POST['filename']
+
+        # dataset into pandas-dataframe
+        f_in = UPLOADE_DIR + filename
+        df = pd.read_csv(f_in, sep='\t', header=0)
+        strain_names  = list(df.columns[2:])
+        marker_names  = list(df['MARKER'])
+        marker_mtypes = list(df['TYPE'])
+
+        # update or insert data from pandas-dataframe
+        for n in strain_names:
+            Strain.objects.update_or_create(name=n, population=Population(id=population.id))
+        for n, t in zip(marker_names, marker_mtypes):
+            Marker.objects.update_or_create(name=n, population=Population(id=population.id), defaults={'mtype':t})
+
+        ms_comb = itertools.product(strain_names, marker_names)
+        for c in ms_comb:
+            get_strain = Strain.objects.get(name=c[0], population=population.id)
+            get_marker = Marker.objects.get(name=c[1], population=population.id)
+            m = marker_names.index(get_marker.name)
+            s = get_strain.name
+            val = df.loc[m, s]
+            MSTable.objects.update_or_create(strain=Strain(id=get_strain.id), marker=Marker(id=get_marker.id), defaults={'value':val})
+
+        return redirect('mm:population_list')
+
+
+def dataset_export(request, population_id, filename=None, sep='\t', extention='txt'):
+    if request.method == 'POST':
+
+        if request.POST.get('filename', None):
+
+            filename  = request.POST.get('filename', None)
+            extention = request.POST.get('extention', None)
+            outfile = DOWNLOAD_DIR + filename + '.' + extention
+
+            # Get sql-query
+            ms_recs = MSTable.objects.filter(strain__population__id=population_id, marker__population__id=population_id)
+            mk_recs = Marker.objects.filter(population__id=population_id).values('name', 'mtype')
+
+            # sql-query to dataframe
+            df = read_frame(ms_recs)
+            mk = read_frame(mk_recs)
+
+            # dataframe to pivot
+            pivot_df = df.pivot(index='marker', columns='strain', values='value').fillna('-')
+
+            # modify
+            pivot_df = pivot_df.merge(mk, left_index=True, right_on='name', how='left')
+            cols = list(pivot_df.columns[-2:]) + list(pivot_df.columns[:-2])
+            pivot_df = pivot_df.loc[:,cols]
+            pivot_df.columns = pivot_df.columns.str.replace('mtype', 'type').str.upper()
+            pivot_df['TYPE'] = pivot_df['TYPE'].replace('Phenotype', 'p')
+            pivot_df['TYPE'] = pivot_df['TYPE'].replace('Genotype', 'g')
+
+            # output
+            pivot_df.to_csv(outfile, sep=sep, index=False, header=True)
+
+            return redirect('mm:population_list')
+
+    else:
+        ### When request is "GET"
+        if request.GET.get('population_id', None):
+            population_id = request.GET.get('population_id', None)
+        population = get_object_or_404(Population, pk=population_id)
+
+        return render(
+            request,
+            'mm/dataset_download.html',
+            {'population' : population, 'active_navi' : 1}
+        )

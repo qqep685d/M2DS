@@ -14,10 +14,6 @@ urlpatterns = [
     path('population/confirm/<int:population_id>/', views.population_confirm, name='population_confirm'),     # Confirm
     path('population/del/<int:population_id>/', views.population_del, name='population_del'),     # Delete
 
-    # Dataset
-    path('dataset/upload/<int:population_id>/', views.dataset_upload, name='dataset_upload'),  # Upload
-    path('dataset/import/<int:population_id>/', views.dataset_import, name='dataset_import'),  # Import
-
     # Strain
     path('strain/', views.strain_list, name='strain_list'),    # Show
     path('strain/population_id=<int:population_id>/', views.strain_list, name='strain_list_subset'),    # Show
@@ -37,4 +33,9 @@ urlpatterns = [
     path('mstable/population_id=<int:population_id>/', views.mstable_list, name='mstable_list_subset'),    # Show
     path('mstable/view/', views.mstable_view, name='mstable_view'),  # View
     path('mstable/edit/mstable_id=<int:mstable_id>/', views.mstable_edit, name='mstable_edit'),  # Edit
+
+    # Dataset
+    path('dataset/upload/<int:population_id>/', views.dataset_upload, name='dataset_upload'),  # Upload
+    path('dataset/import/<int:population_id>/', views.dataset_import, name='dataset_import'),  # Import
+    path('dataset/export/<int:population_id>/', views.dataset_export, name='dataset_export'),  # Download
 ]

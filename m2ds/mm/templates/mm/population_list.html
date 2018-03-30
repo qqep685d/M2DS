@@ -23,11 +23,11 @@
             <td>{{ population_rec.place }}</td>
             <td>{{ population_rec.cultivator }}</td>
             <td>
-                <a href="{% url 'mm:dataset_upload' population_id=population_rec.id %}" class="btn btn-outline-secondary btn-sm">Upload</a>
+                <a href="{% url 'mm:dataset_upload' population_id=population_rec.id %}" class="btn btn-outline-secondary btn-sm">Upload/Import</a>
                 <a href="{% url 'mm:strain_list_subset' population_id=population_rec.id %}" class="btn btn-outline-primary btn-sm">Strains</a>
                 <a href="{% url 'mm:marker_list_subset' population_id=population_rec.id %}" class="btn btn-outline-success btn-sm">Markers</a>
                 <a href="{% url 'mm:mstable_list_subset' population_id=population_rec.id %}" class="btn btn-outline-warning btn-sm">MS Table</a>
-                <!-- <a href="{% url 'mm:mstable_list_subset' population_id=population_rec.id %}" class="btn btn-outline-secondary btn-sm">Download</a> -->
+                <a href="{% url 'mm:dataset_export' population_id=population_rec.id %}" class="btn btn-outline-secondary btn-sm">Export/Download</a>
             </td>
             <td>
                 <a href="{% url 'mm:population_edit' population_id=population_rec.id %}" class="btn btn-outline-dark btn-sm">Edit</a>

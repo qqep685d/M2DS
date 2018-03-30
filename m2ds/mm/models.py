@@ -35,7 +35,7 @@ class Strain(models.Model):
 
 
 class Marker(models.Model):
-    marker_types = (('g', 'Genetic Marker'), ('p', 'Phenotypic Marker'))
+    marker_types = (('g', 'Genotype'), ('p', 'Phenotype'))
 
     id     = models.AutoField('ID', primary_key=True)
     name   = models.CharField('Name', max_length=20)

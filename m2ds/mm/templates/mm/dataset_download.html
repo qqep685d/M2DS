@@ -1,0 +1,40 @@
+{% extends "mm/base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <h4 class="mt-4 mb-5 border-bottom">Population Record</h4>
+    <div class="row">
+        <div class="col-md-2"><h5>Record ID: {{population.id}}</h5></div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tbody>
+                <tr><td class="bg-light text-dark" style="width:200px;">Name</td><td>{{population.name}}</td></tr>
+                <tr><td class="bg-light text-dark">Year</td><td>{{population.year}}</td></tr>
+                <tr><td class="bg-light text-dark">Place</td><td>{{population.place}}</td></tr>
+                <tr><td class="bg-light text-dark">Cultivator</td><td>{{population.cultivator}}</td></tr>
+                <tr><td class="bg-light text-dark">Description</td><td>{{population.description}}</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h4 class="mt-4 mb-5 border-bottom">Download Dataset</h4>
+    <form action="{% url 'mm:dataset_export' population_id=population.id %}" method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" class="form-control col-md-3" placeholder="File Name" name="filename">
+            <select class="custom-select col-md-1" name="extention">
+                <option value="txt">.txt</option>
+                <option value="csv">.csv</option>
+                <option value="tsv">.tsv</option>
+            </select>
+            <span class="input-group-btn col-md-2">
+                <button type="submit" class="btn btn-primary">Export</button>
+            </span>
+        </div>
+    </form>
+
+    <hr>
+
+    <a href="{% url 'mm:population_list' %}" class="btn btn-outline-dark">Back</a>
+{% endblock content %}
