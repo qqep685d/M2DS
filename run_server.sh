@@ -1,2 +1,2 @@
-cd m2ds
+cd m2ds/
 python manage.py runserver
