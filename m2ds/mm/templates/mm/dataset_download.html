@@ -22,19 +22,18 @@
     <form action="{% url 'mm:dataset_export' population_id=population.id %}" method="post">
         {% csrf_token %}
         <div class="input-group">
-            <input type="text" class="form-control col-md-3" placeholder="File Name" name="filename">
+            <input type="text" class="form-control col-md-3" name="filename" value="output">
             <select class="custom-select col-md-1" name="extention">
                 <option value="txt">.txt</option>
                 <option value="csv">.csv</option>
                 <option value="tsv">.tsv</option>
             </select>
             <span class="input-group-btn col-md-2">
-                <button type="submit" class="btn btn-primary">Export</button>
+                <button type="submit" class="btn btn-primary">Download</button>
             </span>
         </div>
     </form>
 
     <hr>
-
     <a href="{% url 'mm:population_list' %}" class="btn btn-outline-dark">Back</a>
 {% endblock content %}

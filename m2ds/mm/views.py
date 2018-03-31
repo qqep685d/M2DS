@@ -6,11 +6,11 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django_pandas.io import read_frame
 
 # default library of python
-import sys, os
+import sys, os, io
 import pandas as pd
 import numpy as np
 import itertools
-import urllib.request
+import urllib
 
 # original library for M2DS
 from mm.models import Population, Strain, Marker, MSTable
@@ -413,13 +413,16 @@ def dataset_import(request, population_id):
 
 
 def dataset_export(request, population_id, filename=None, sep='\t', extention='txt'):
+    from django.urls import reverse
+
     if request.method == 'POST':
 
         if request.POST.get('filename', None):
 
             filename  = request.POST.get('filename', None)
             extention = request.POST.get('extention', None)
-            outfile = DOWNLOAD_DIR + filename + '.' + extention
+            filename_with_extention = filename + '.' + extention
+            outfile = DOWNLOAD_DIR + filename_with_extention
 
             # Get sql-query
             ms_recs = MSTable.objects.filter(strain__population__id=population_id, marker__population__id=population_id)
@@ -436,14 +439,32 @@ def dataset_export(request, population_id, filename=None, sep='\t', extention='t
             pivot_df = pivot_df.merge(mk, left_index=True, right_on='name', how='left')
             cols = list(pivot_df.columns[-2:]) + list(pivot_df.columns[:-2])
             pivot_df = pivot_df.loc[:,cols]
-            pivot_df.columns = pivot_df.columns.str.replace('mtype', 'type').str.upper()
+            pivot_df = pivot_df.rename(columns={'name': 'MARKER', 'mtype': 'TYPE'})
+            # pivot_df.columns[0] = pivot_df.columns[0].str.replace('name', 'marker').str.upper()
+            # pivot_df.columns[1] = pivot_df.columns[1].str.replace('mtype', 'type').str.upper()
             pivot_df['TYPE'] = pivot_df['TYPE'].replace('Phenotype', 'p')
             pivot_df['TYPE'] = pivot_df['TYPE'].replace('Genotype', 'g')
 
             # output
             pivot_df.to_csv(outfile, sep=sep, index=False, header=True)
 
-            return redirect('mm:population_list')
+            # download
+            response = HttpResponse(open(outfile,'rb').read(), content_type="text/plain")
+            response["Content-Disposition"] = "attachment; filename=%s" % filename_with_extention
+
+            return response
+            #return redirect('mm:population_list')
+
+        else:
+            if request.POST.get('population_id', None):
+                population_id = request.POST.get('population_id', None)
+            population = get_object_or_404(Population, pk=population_id)
+
+            return render(
+                request,
+                'mm/dataset_download.html',
+                {'population' : population, 'active_navi' : 1,}
+            )
 
     else:
         ### When request is "GET"
@@ -454,5 +475,5 @@ def dataset_export(request, population_id, filename=None, sep='\t', extention='t
         return render(
             request,
             'mm/dataset_download.html',
-            {'population' : population, 'active_navi' : 1}
+            {'population' : population, 'active_navi' : 1,}
         )
