@@ -1,5 +1,5 @@
 MARKER	TYPE	Line001	Line002	Line003	Line004	Line005	Line006	Line007	Line008	Line009	Line010	Line011	Line012	Line013	Line014	Line015	Line016
-Marker001	g	H		B	H	H	B	A	B	B	A	B	H	H	B	B	H
+Marker001	g	H	A	B	H	H	B	A	B	B	A	B	H	H	B	B	H
 Marker002	g	H	A	B	H	H	B	A	B	B	A	B	H	H	B	B	H
 Marker003	g	H	A	B	H	H	B	A	B	B	A	B	H	H	B	B	H
 Marker004	g	B	B	B	B	H	H	H	H	H	H	A	A	H	H	H	B
@@ -14,4 +14,3 @@ Marker012	g	D	D	D	D	B	B	B	B	D	D	D	D	D	B	D	D
 Marker013	g	D	D	B	D	D	B	D	D	D	D	D	B	D	D	D	D
 Marker014	g	D	D	B	D	D	D	D	B	D	B	D	D	D	D	B	D
 Marker015	g	H	H	B	H	H	A	B	B	H	B	H	A	H	A	B	H
-Marker016	g	H	B	A	A	B	A	H	B	H	H	H	H	H	B	H	A

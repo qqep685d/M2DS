@@ -389,7 +389,7 @@ def dataset_import(request, population_id):
 
         # dataset into pandas-dataframe
         f_in = UPLOADE_DIR + filename
-        df = pd.read_csv(f_in, sep='\t', header=0)
+        df = pd.read_csv(f_in, sep='\t', header=0).fillna('-')
         strain_names  = list(df.columns[2:])
         marker_names  = list(df['MARKER'])
         marker_mtypes = list(df['TYPE'])
