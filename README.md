@@ -19,7 +19,7 @@ This application is a tool for managing the polymorphic data of markers in F2 or
 
 ## Getting M2DS
 
-- Type command on terminal:  
+- Type command on terminal (using Git):  
 `git clone https://github.com/qqep685d/M2DS.git`
 
 - Go to [https://github.com/qqep685d/M2DS](https://github.com/qqep685d/M2DS)  
@@ -53,7 +53,7 @@ Click "Clone or download" and "Download ZIP"
 
 ## Dataset File
 
-See example file.
+See the example files:  
 `M2DS/samples/sample_dataset.txt` or `M2DS/samples/sample_dataset_add.txt`
 
 - The first row is header line.  
@@ -79,4 +79,4 @@ See example file.
 
 ## License
 
-* This software is released under the MIT License, see LICENSE.
+This software is released under the MIT License, see LICENSE.
