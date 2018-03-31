@@ -41,7 +41,7 @@ Click "Clone or download" and "Download ZIP"
         ("Name" and "Year" are required fields.)  
 
     1. `Upload` file and `Import` dataset into database  in M2DS.  
-        "M2DS/samples/sample_dataset.txt" is an example file.  
+        `M2DS/samples/sample_dataset.txt` is an example file.  
 
     - View records: `Strains`, `Markers` and `MS Table`.
 
@@ -52,6 +52,9 @@ Click "Clone or download" and "Download ZIP"
 ---
 
 ## Dataset File
+
+See example file.
+`M2DS/samples/sample_dataset.txt` or `M2DS/samples/sample_dataset_add.txt`
 
 - The first row is header line.  
     - The first column is "MARKER". (Don't change!)
