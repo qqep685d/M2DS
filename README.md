@@ -6,33 +6,47 @@ This application is a tool for managing the polymorphic data of markers in F2 or
 ## REQUIREMENTS
 
 ### Software
-- Python (3.6.3)
-- SQLite3 (3.19.3)
-
-### Python Packages
-
-- Django (2.0.3)
-- django-bootstrap4 (0.0.6)
-- django-pandas (0.5.1)
-- numpy (1.14.2)
-- pandas (0.22.0)
+- Docker
+    - Mac: Docker for Mac
+    - Windows: Docker Toolbox
 
 ---
 
 ## Getting M2DS
 
-- Type command on terminal (using Git):  
-`git clone https://github.com/qqep685d/M2DS.git`
+1. Download and Install the Docker software.  
 
-- Go to [https://github.com/qqep685d/M2DS](https://github.com/qqep685d/M2DS)  
-Click "Clone or download" and "Download ZIP"
+    Download site:  
+    [https://www.docker.com/community-edition#/download](https://www.docker.com/community-edition#/download)
+
+1. Start Docker
+
+    If you use MacOS machine, start Terminal.  
+    See details: [https://store.docker.com/editions/community/docker-ce-desktop-mac](https://store.docker.com/editions/community/docker-ce-desktop-mac).
+
+    If you use Windows machine, click the Docker QuickStart icon on your desktop, and start Terminal.  
+    See details: [https://docs.docker.com/toolbox/toolbox_install_windows/#step-3-verify-your-installation](https://docs.docker.com/toolbox/toolbox_install_windows/#step-3-verify-your-installation)
+
+1. Type command on Terminal (using Git):  
+`git clone https://github.com/qqep685d/M2DS.git`  
+and  
+Move to the directory, M2DS: `cd M2DS`
+
+1. Type command:  
+`sh 01_build_app.sh`
+
+1. Type command:  
+`sh 02_create_db.sh`
 
 ---
 
 ## Basic Usage
 
-1. Type command on terminal:  
-`sh run_server.sh`
+Start Terminal on `M2DS/`.
+
+
+1. Type command:  
+`sh 03_run_server.sh`
 
 1. Go to the URL on web browser:  
 `127.0.0.1:8000`
@@ -50,6 +64,10 @@ Click "Clone or download" and "Download ZIP"
     - Edit / Delete records.
 
     - `Download` dataset.
+
+1. (Option) You want make M2DS back to the initial state, type command `sh 04_clear_app.sh`.  
+__Attention: This command remove some files from M2DS:
+database file (db.sqlite3), uploaded and download files.__
 
 ---
 
@@ -76,6 +94,20 @@ See the example files:
         * Phenotype
             - Strings, Integer or Float etc.
             - `-`: missing value
+
+---
+
+### Softwares and Python packages included in M2DS
+#### Softwares
+- Python (3.6.3)
+- SQLite3 (3.19.3)
+
+#### Python Packages
+- Django (2.0.3)
+- django-bootstrap4 (0.0.6)
+- django-pandas (0.5.1)
+- numpy (1.14.2)
+- pandas (0.22.0)
 
 ---
 
