@@ -1,13 +1,12 @@
 class MMFinder():
 
     # === Starting 'MMFinder' ===
-    def __init__(self, input_data, Delimiter='\t', HeaderLineNo=-1, IndexCol=0, random_seed=None):
+    def __init__(self, dataset, random_seed=None):
         import pandas as pd
         import numpy as np
         import scipy.special as ss
 
         # --- Loading dataset ---
-        dataset = pd.read_csv(input_data, sep=Delimiter, header=HeaderLineNo, index_col=IndexCol)
         dataset.index.name = 'MarkerID'
 
         # --- Getting information ---
@@ -46,23 +45,16 @@ class MMFinder():
             self.theorical_marker_num = self.N_markers
 
         # --- Culculating Max number of distinguishable pairs ---
-        self.MaxDistFreq = self.max_distinguishable_pairs()
+        self.MaxDistFreq = np.max(self.max_distinguishable_pairs())
 
         # --- Setting random-seed ---
         np.random.seed(random_seed)
 
-        # --- Print out ---
-        print('=== Dataset ===')
-        print(input_data)
-        print('- %d individuals' % self.N_indviduals)
-        print('- %d markers' % self.N_markers)
-        print('===============')
-
-    def set_coefficients(self, w_d=1, w_o=1, w_i=1, w_u=1):
-        self.w_d = w_d
-        self.w_o = w_o
-        self.w_i = w_i
-        self.w_u = w_u
+    def set_coefficients(self, wd=1, wo=1, wi=1, wu=1):
+        self.wd = wd
+        self.wo = wo
+        self.wi = wi
+        self.wu = wu
 
     # === Initial population ===
     def make_population(self,  popsize=10, marker_on='minimum', turn_on_N=5):
@@ -102,12 +94,12 @@ class MMFinder():
         return self.chrompop
 
     # === Selection ===
-    def selection(self, selective_pressure=1.0):
+    def selection(self, selective_pressure=0.0):
         import numpy as np
 
         # --- Selection ---
         curpop_size = len(self.chrompop)
-        newpop_size = int(curpop_size * selective_pressure)
+        newpop_size = int(curpop_size * (1.0 - selective_pressure))
         pop_idx = [i for i in range(curpop_size)]
 
         scores, _ = self.scoring()
@@ -182,8 +174,8 @@ class MMFinder():
         if np.max(D) == self.MaxDistFreq:
             D = [1 if v==self.MaxDistFreq else v for v in D]
             D = [0 if v<self.MaxDistFreq else v for v in D]
-            D = np.numpy(D)
-        scores = (self.w_d * D) + (self.w_o * O) + (self.w_i * I) - (self.w_u * U)
+            D = np.array(D)
+        scores = (self.wd * D) + (self.wo * O) + (self.wi * I) - (self.wu * U)
 
         # --- Update best score & chromosome ---
         if self.best_score < np.max(scores):
@@ -237,7 +229,7 @@ class MMFinder():
 
             D_num.append(distinguishable)
 
-        D = np.array(D_num / self.total_pairs)
+        D = np.array(D_num) / self.total_pairs
 
         return D
 

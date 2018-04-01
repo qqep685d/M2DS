@@ -381,7 +381,6 @@ def dataset_upload(request, population_id):
 
 
 def dataset_import(request, population_id):
-
     population = get_object_or_404(Population, pk=population_id)
 
     if request.method == 'POST':
@@ -413,7 +412,6 @@ def dataset_import(request, population_id):
 
 
 def dataset_export(request, population_id, filename=None, sep='\t', extention='txt'):
-    from django.urls import reverse
 
     if request.method == 'POST':
 
@@ -477,3 +475,77 @@ def dataset_export(request, population_id, filename=None, sep='\t', extention='t
             'mm/dataset_download.html',
             {'population' : population, 'active_navi' : 1,}
         )
+
+
+def mmf_setting(request, population_id=None):
+
+    population = get_object_or_404(Population, pk=population_id)
+
+    return render(
+        request,
+        'mm/mmf_setting.html',
+        {
+            'population': population,
+            'active_navi' : 1,
+        }
+    )
+
+
+def mmf_search(request, population_id):
+    from mm.MMFinder import MMFinder
+
+    if request.method == 'POST':
+        # Paramaters
+        popsize    = int(request.POST.get('popsize'   , 20))
+        generation = int(request.POST.get('generation', 100))
+        selection  = float(request.POST.get('selection' , 0.00))
+        mutation   = float(request.POST.get('mutation'  , 0.50))
+        wd = float(request.POST.get('wd'  , 1.00))
+        wo = float(request.POST.get('wo'  , 1.00))
+        wi = float(request.POST.get('wi'  , 1.00))
+        wu = float(request.POST.get('wu'  , 1.00))
+
+        # DB to Dataframe
+        recs = MSTable.objects.filter(strain__population__id=population_id, marker__population__id=population_id)
+        df = read_frame(recs).pivot(index='marker', columns='strain', values='value').fillna('-')
+
+        # MMFinder
+        mypop = MMFinder(df, random_seed=None)
+        mypop.make_population(marker_on='all_one', popsize=popsize)
+        mypop.set_coefficients(wd=wd, wo=wo, wi=wi, wu=wu)
+
+        sc, sv = mypop.scoring()
+
+        rep = -1
+
+        f_out = DOWNLOAD_DIR + 'mmf_out.txt'
+        f = open(f_out, 'w')
+
+        # --- Print out ---
+        f.write('#=== Dataset ===\n')
+        f.write('#- %d individuals\n' % mypop.N_indviduals)
+        f.write('#- %d markers\n' % mypop.N_markers)
+        f.write('#===============\n')
+        f.write('#- %d pairs\n' % mypop.total_pairs)
+        f.write('#- %s : Max Distinguishable\n' % np.max(mypop.MaxDistFreq))
+        f.write('#===============\n')
+        f.write('%d\t%.4f\t%s\t%.4f\n' % (rep+1, mypop.best_score, np.sum(mypop.best_chrom, axis=1), np.max(sv[0])))
+
+        # === (2) repeat selection & crossing & mutation ===
+        for rep in range(0,generation):
+
+            mypop.selection(selective_pressure=selection)
+            mypop.recombination(prob=[0.50, 0.45, 0.05])
+            mypop.mutation(r_mutation=mutation)
+
+            sc, sv = mypop.scoring()
+
+            f.write('%d\t%.4f\t%s\t%.4f\n' % (rep+1, mypop.best_score, np.sum(mypop.best_chrom, axis=1), np.max(sv[0])))
+
+        f.write('#===============\n')
+        f.write('%s\n' % mypop.best_chrom)
+
+        f.close()
+
+    return redirect('mm:population_list')
+    #return HttpResponse('mmf_search')

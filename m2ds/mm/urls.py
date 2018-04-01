@@ -35,7 +35,11 @@ urlpatterns = [
     path('mstable/edit/mstable_id=<int:mstable_id>/', views.mstable_edit, name='mstable_edit'),  # Edit
 
     # Dataset
-    path('dataset/upload/<int:population_id>/', views.dataset_upload, name='dataset_upload'),  # Upload
-    path('dataset/import/<int:population_id>/', views.dataset_import, name='dataset_import'),  # Import
-    path('dataset/export/<int:population_id>/', views.dataset_export, name='dataset_export'),  # Download
+    path('dataset/upload/population_id=<int:population_id>/', views.dataset_upload, name='dataset_upload'),  # Upload
+    path('dataset/import/population_id=<int:population_id>/', views.dataset_import, name='dataset_import'),  # Import
+    path('dataset/export/population_id=<int:population_id>/', views.dataset_export, name='dataset_export'),  # Download
+
+    # MMFinder
+    path('mmf/setting/population_id=<int:population_id>/', views.mmf_setting, name='mmf_setting'),  # Setting
+    path('mmf/search/population_id=<int:population_id>/',  views.mmf_search,  name='mmf_search'),  # Search
 ]

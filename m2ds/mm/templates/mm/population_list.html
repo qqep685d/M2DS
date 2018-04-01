@@ -27,6 +27,7 @@
                 <a href="{% url 'mm:strain_list_subset' population_id=population_rec.id %}" class="btn btn-outline-primary btn-sm">Strains</a>
                 <a href="{% url 'mm:marker_list_subset' population_id=population_rec.id %}" class="btn btn-outline-success btn-sm">Markers</a>
                 <a href="{% url 'mm:mstable_list_subset' population_id=population_rec.id %}" class="btn btn-outline-warning btn-sm">MS Table</a>
+                <a href="{% url 'mm:mmf_setting' population_id=population_rec.id %}" class="btn btn-outline-info btn-sm">MMFinder</a>
                 <a href="{% url 'mm:dataset_export' population_id=population_rec.id %}" class="btn btn-outline-secondary btn-sm">Download</a>
             </td>
             <td>

@@ -1,0 +1,77 @@
+{% extends "mm/base.html" %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+    <h4 class="mt-4 border-bottom">Mini-Markerset Finder</h4>
+
+    <h5 class="mt-4 border-bottom">Record ID: {{population.id}}</h5>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tbody>
+                <tr><td class="bg-light text-dark" style="width:200px;">Name</td><td>{{population.name}}</td></tr>
+                <tr><td class="bg-light text-dark">Year</td><td>{{population.year}}</td></tr>
+                <tr><td class="bg-light text-dark">Place</td><td>{{population.place}}</td></tr>
+                <tr><td class="bg-light text-dark">Cultivator</td><td>{{population.cultivator}}</td></tr>
+                <tr><td class="bg-light text-dark">Description</td><td>{{population.description}}</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <form action="{% url 'mm:mmf_search' population_id=population.id %}" method="post">
+    {% csrf_token %}
+    <h5 class="mt-4 border-bottom">Parameters of Genetic Algorism</h5>
+    <div class="table-responsive">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="bg-light text-dark" style="width:200px;">Population size</td>
+                    <td><input type="number" name="popsize" min="1" max="1000" step="1" value="20" style="width:100px;"></td>
+                    <td class="bg-light text-dark" style="width:200px;">Generation</td>
+                    <td><input type="number" name="generation" min="1" max="1000" step="1" value="100" style="width:100px;"></td>
+                </tr>
+                <tr>
+                    <td class="bg-light text-dark" style="width:200px;">Bottleneck</td>
+                    <td><input type="number" name="selection" min="0.0" max="1.0" step="0.01" value="0.00" style="width:100px;"></td>
+                    <td class="bg-light text-dark" style="width:200px;">Mutation rate</td>
+                    <td><input type="number" name="mutation" min="0.0" max="1.0" step="0.01" value="0.50" style="width:100px;"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h5 class="mt-4 border-bottom">Parameters of Scoring</h5>
+    <div class="table-responsive">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="bg-light text-dark" style="width:200px;">wd: Weight of score "D"</td>
+                    <td><input type="number" name="wd" min="0" max="1" step="0.01" value="1.00" style="width:100px;"></td>
+                    <td class="bg-light text-dark" style="width:200px;">wo: Weight of Score "O"</td>
+                    <td><input type="number" name="wo" min="0" max="1" step="0.01" value="1.00" style="width:100px;"></td>
+                </tr>
+                <tr>
+                    <td class="bg-light text-dark" style="width:200px;">wi: Weight of score "I"</td>
+                    <td><input type="number" name="wi" min="0" max="1" step="0.01" value="1.00" style="width:100px;"></td>
+                    <td class="bg-light text-dark" style="width:200px;">wu: Weight of score "U"</td>
+                    <td><input type="number" name="wu" min="0" max="1" step="0.01" value="1.00" style="width:100px;"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="col-md-12">Score = wd * D + wo * O + wi * I - wu * U</div>
+        <div class="col-md-12"> D: If distinguishable pairs is max value, D=1. Else, D=0.</div>
+        <div class="col-md-12"> O: Frequency of using markers to theoretical minimum markers</div>
+        <div class="col-md-12"> I: Frequency of informative genotypes</div>
+        <div class="col-md-12"> U: Frequency of missing data</div>
+    </div>
+
+    <div class="row" style="margin-top:20px;">
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-info">Run</button>
+        </div>
+    </div>
+    </form>
+
+    <hr>
+    <a href="{% url 'mm:population_list' %}" class="btn btn-outline-dark">Back</a>
+{% endblock content %}

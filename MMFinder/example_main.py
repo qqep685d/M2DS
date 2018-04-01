@@ -19,7 +19,8 @@ if __name__ == '__main__':
     print('N of pairs: %d' % mypop2.total_pairs)
     print('N of Distinguishable pairs: %f' % mypop2.MaxDistN)
 
-    print('------' % max_sc)
+    print('------')
+    print(max_sc)
     print(0, mypop2.best_score, np.sum(mypop2.best_chrom, axis=1), np.max(sv[0]))
 
     # === (2) repeat selection & crossing & mutation ===

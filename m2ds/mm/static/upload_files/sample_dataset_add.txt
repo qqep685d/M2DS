@@ -1,2 +1,0 @@
-MARKER	TYPE	Line001	Line002	Line003	Line004	Line005	Line006	Line007	Line008	Line009	Line010	Line011	Line012	Line013	Line014	Line015	Line016
-Marker016	g	H	B	A	A	B	A	H	B	H	H	H	H	H	B	H	A
