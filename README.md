@@ -59,11 +59,11 @@ Start Terminal on `M2DS/`.
     1. `Upload` file and `Import` dataset into database  in M2DS.  
         `M2DS/samples/sample_dataset.txt` is an example file.  
 
-    - View records: `Strains`, `Markers` and `MS Table`.
+    1. View records: `Strains`, `Markers` and `MS Table`.
 
-    - Edit / Delete records.
+    1. Edit / Delete records.
 
-    - `Download` dataset.
+    1. `Download` dataset.
 
 1. (Option) You want make M2DS back to the initial state, type command `sh 04_clear_app.sh`.  
 __Attention: This command remove some files from M2DS:
@@ -80,6 +80,7 @@ See the example files:
     - The first column is "MARKER". (Don't change!)
     - The second column is "TYPE". (Don't change!)
     - The third column and later are "strain names". You can input arbitrary names.
+
 - The second row and later are each values.
     - The first column is "marker name". You can input arbitrary names. But the duplicated names is not allowed.
     - The second column is "type of marker". Input `g` or `p`.  

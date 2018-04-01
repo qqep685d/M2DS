@@ -1,2 +1,2 @@
 cd m2ds/
-docker build -t m2ds_app .
+docker build -t m2ds .
