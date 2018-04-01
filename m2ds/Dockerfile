@@ -1,11 +1,12 @@
-FROM python:3.6.5-alpine3.7
+FROM python:3.6.5-slim
 
 LABEL maintainer "A. Ohta"
 
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update \
-    && apk --no-cache add cmake gcc g++ gfortran sqlite
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends sqlite3 \
+    && apt-get clean
 
 WORKDIR /home
 
