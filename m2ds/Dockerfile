@@ -1,20 +1,20 @@
-FROM python:3.4
+FROM python:3.6.5-alpine3.7
 
 LABEL maintainer "A. Ohta"
 
 ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends sqlite3
+RUN apk update \
+    && apk --no-cache add cmake gcc g++ gfortran sqlite
 
 WORKDIR /home
 
 COPY requirements.txt ./
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
-RUN python manage.py makemigrations
-RUN python manage.py migrate
+RUN python manage.py makemigrations \
+    && python manage.py migrate
 
 EXPOSE 8000
 

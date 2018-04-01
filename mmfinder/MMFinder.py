@@ -45,6 +45,9 @@ class MMFinder():
                 break
             self.theorical_marker_num = self.N_markers
 
+        # --- Culculating Max number of distinguishable pairs ---
+        self.MaxDistN = self.max_distinguishable_pairs()
+
         # --- Setting random-seed ---
         np.random.seed(random_seed)
 
@@ -55,12 +58,11 @@ class MMFinder():
         print('- %d markers' % self.N_markers)
         print('===============')
 
-    def set_coefficients(self, w_d=1, w_o=1, w_i=1, w_u=1, w_m=2):
+    def set_coefficients(self, w_d=1, w_o=1, w_i=1, w_u=1):
         self.w_d = w_d
         self.w_o = w_o
         self.w_i = w_i
         self.w_u = w_u
-        self.w_m = w_m
 
     # === Initial population ===
     def make_population(self,  popsize=10, marker_on='minimum', turn_on_N=5):
@@ -175,14 +177,11 @@ class MMFinder():
         O = self.on_state_markers()
         I = self.informative_genotypes()
         U = self.missing_genotypes()
-        MaxD = self.max_distinguishable_pairs()
 
         # --- Scoring ---
-        if np.max(D) == MaxD:
-            D2 = [self.w_m if v==MaxD else v for v in D]
-            scores = (self.w_d * D2) + (self.w_o * O) + (self.w_i * I) - (self.w_u * U)
-        else:
-            scores = (self.w_d * D) + (self.w_o * O) + (self.w_i * I) - (self.w_u * U)
+        if np.max(D) == self.MaxDistN:
+            D = [0 if v<self.MaxDistN else v for v in D]
+        scores = (self.w_d * D) + (self.w_o * O) + (self.w_i * I) - (self.w_u * U)
 
         # --- Update best score & chromosome ---
         if self.best_score < np.max(scores):
