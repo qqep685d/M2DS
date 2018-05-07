@@ -3,7 +3,7 @@ This application is a tool for managing the polymorphic data of markers in F2 or
 
 **ATTENTION: This Application is still the version of the development environment. Please use on local server. Regarding the use of this application, note that I am not responsible for any loss, damages and troubles.**
 
-![screenshot](./samples/screenshots1.png "screenshot")
+![screenshot](./samples/screenshot1.png "screenshot")
 
 ## REQUIREMENTS
 
