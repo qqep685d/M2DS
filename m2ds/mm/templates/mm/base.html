@@ -13,7 +13,7 @@
 
 <body>
     <div class="container">
-        <h1><a href="{% url 'mm:index' %}" class="text-dark" style="text-decoration: none;">M2DS <span style="font-size:12pt;">Marker Management Database System | version 0.1</span></a></h1>
+        <h1><a href="{% url 'mm:index' %}" class="text-dark" style="text-decoration: none;">M2DS <span style="font-size:12pt;">Marker Management Database System | version 1.1</span></a></h1>
         <!-- Navigation bar -->
         <ul class="nav nav-tabs">
             <li class="nav-item"><a href="{% url 'mm:population_list' %}" class="nav-link {% ifequal active_navi 1 %} active {% endifequal %}">Population</a></li>
@@ -25,6 +25,7 @@
             {{ content }}
         {% endblock %}
     </div>
+
 <script src="{% static 'mm/js/jquery.min.js' %}"></script>
 <script src="{% static 'mm/js/bootstrap.bundle.min.js' %}"></script>
 {% block extra_js %}{% endblock %}
