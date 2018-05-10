@@ -182,7 +182,7 @@ class MMFinder():
         if np.max(D) == self.MaxDistFreq:
             D = [1 if v==self.MaxDistFreq else v for v in D]
             D = [0 if v<self.MaxDistFreq else v for v in D]
-            D = np.numpy(D)
+            D = np.array(D)
         scores = (self.w_d * D) + (self.w_o * O) + (self.w_i * I) - (self.w_u * U)
 
         # --- Update best score & chromosome ---

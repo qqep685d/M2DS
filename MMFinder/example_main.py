@@ -17,7 +17,7 @@ if __name__ == '__main__':
     sc, sv = mypop2.scoring()
 
     print('N of pairs: %d' % mypop2.total_pairs)
-    print('N of Distinguishable pairs: %f' % mypop2.MaxDistN)
+    print('N of Distinguishable pairs: %f' % mypop2.MaxDistFreq)
 
     print('------')
     print(max_sc)
