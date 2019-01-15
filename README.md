@@ -106,7 +106,7 @@ See the example files:
 - SQLite3 (3.19.3)
 
 #### Python Packages
-- Django (2.1.2)
+- Django (2.1.5)
 - django-bootstrap4 (0.0.6)
 - django-pandas (0.5.1)
 - numpy (1.14.2)
