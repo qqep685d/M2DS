@@ -1,6 +1,6 @@
 numpy==1.14.2
 pandas==0.22.0
 scipy==1.0.1
-Django==2.1.5
+django>=2.1.6
 django-bootstrap4==0.0.6
 django-pandas==0.5.1
